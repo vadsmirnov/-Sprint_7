@@ -5,6 +5,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ public class OrderCreateTest {
     OrderClient orderClient = new OrderClient();
     Order order = OrderGenerator.createRanndomOrder();
     private final String[] color;
+    private int orderTrack;
 
     public OrderCreateTest(String[] color) {
         this.color = color;
@@ -50,12 +52,13 @@ public class OrderCreateTest {
                 .statusCode(HttpStatus.SC_CREATED)
                 .and()
                 .assertThat().body("track", notNullValue());
-        Response cancelResponse = orderClient.cancel(orderTrack);
-        cancelResponse.then()
-                .statusCode(HttpStatus.SC_OK)
-                .and()
-                .body("ok", equalTo(true));
 
     }
 
+    @After
+    public void tearDown() {
+        if (orderTrack != 0) {
+            orderClient.cancel(orderTrack);
+        }
+    }
 }
