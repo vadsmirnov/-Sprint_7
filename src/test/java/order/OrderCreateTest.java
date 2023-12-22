@@ -47,7 +47,7 @@ public class OrderCreateTest {
     public void createOrder() {
         order.setColor(color);
         Response response = orderClient.create(order);
-        int orderTrack = response.path("track");
+        orderTrack = response.path("track");
         response.then()
                 .statusCode(HttpStatus.SC_CREATED)
                 .and()
